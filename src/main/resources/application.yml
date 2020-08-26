@@ -1,0 +1,84 @@
+server:
+  port: 6767
+
+spring:
+  datasource:
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    url: jdbc:sqlserver://10.20.33.124;databaseName=YXHIS
+#    url: jdbc:sqlserver://127.0.0.1\SQLSERVER;databaseName=school
+    username: sa
+    password: 123qwe,.
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+cron:
+#  time: 0 10 0 * * ?
+  time: 0/30 * * * * ?
+exec:
+  names:
+    SP_PTJK_GetDataPart1:
+      SYS_JGDM_LIST:
+      TB_CIS_PRESCRIPTION_DETAIL:
+      TB_DIAGNOSIS_DETAIL_MZ:
+      TB_DIC_BUSI_MATE_ADVICE:
+      TB_DIC_COMPANY:
+      TB_DIC_DEPARTMENT:
+      TB_DIC_DEPARTMENT_KEBIE:
+      TB_DIC_DEPARTMENT_ZHUANKE:
+      TB_DIC_DETAIL_ITEM:
+      TB_DIC_IDC10_YUANNEI:
+      TB_DIC_PRACTITIONER:
+      TB_DIC_WAREHOUSE:
+      TB_DIC_YZXM:
+      TB_DRUG_DETAIL:
+      TB_EMR_BLOODTRANS_Z:
+      TB_EMR_BLOODTRANS2:
+      TB_HIS_MZ_CHARGE:
+      TB_HIS_MZ_FEE_DETAIL:
+      TB_HIS_MZ_REG:
+      TB_MZ_DRADVICE_EXC:
+      TB_MZ_EMR:
+      TB_MZSF_CWRZ:
+      TB_YL_MZ_FIRST_SIGN:
+      TB_YL_MZ_MEDICAL_RECORD:
+      TB_YL_PATIENT_INFORMATION:
+      TB_ZYCW_ZAIYUAN_JL:
+      TB_EMR_BLOODSTOCK2:
+    SP_PTJK_GetDataPart2:
+      TB_CEX_CLIEXA_INFO:
+      TB_CIS_DRADVICE_DETAIL:
+      TB_CIS_DRADVICE_ZXJL:
+      TB_DIAGNOSIS_DETAIL_ZY:
+      TB_DRUG_STOCK:
+      TB_DRUG_STOCKIN:
+      TB_DRUG_STOCKIN_DETAIL:
+      TB_HIS_JZ_CHARGE:
+      TB_HIS_ZY_ADM_REG:
+      TB_HIS_ZY_DIS_REG:
+      TB_HIS_ZY_FEE_DETAIL:
+      TB_HIS_ZYSF_CHUNA:
+      TB_LIS_INDICATORS:
+      TB_LIS_REPORT:
+      TB_RIS_REPORT:
+      TB_YL_ZDZMS:
+      TB_YN_NEWBORN_INF:
+      TB_ZY_YNZKZC_JL:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#logging:
+#  level:
+#    com.yx.dao: debug
+#    com.yx.services: debug
+
