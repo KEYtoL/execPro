@@ -35,7 +35,7 @@ public class ExecProServiceIpml implements  ExecProService {
      * 定时任务，提取前一天数据
      */
     @Override
-    @Scheduled(cron = "${cron.time}")
+//    @Scheduled(cron = "${cron.time}")
     public void ExecPro() {
 
             Date date = new Date();
@@ -77,5 +77,27 @@ public class ExecProServiceIpml implements  ExecProService {
 
     }
 
+    /**
+     * 网页执行存储过程
+     * @param Pro 存储过程名
+     * @param tableName 表名
+     * @param Dbegin  开始时间
+     * @param Dend   结束时间
+     */
+    @Override
+    public String ExecProByPage(String Pro, String tableName, String Dbegin, String Dend) {
+        try {
+            String result = execProDao.ExecPro(Pro, tableName, Dbegin, Dend);
+
+            if (StringUtils.isEmpty(result)){
+                result="成功";
+            }
+            log.info(Pro+":"+tableName+"---------"+result);
+            return result;
+        } catch (Exception e) {
+            log.info(Pro+":"+tableName+"---------"+e.getMessage());
+            return e.getMessage();
+        }
+    }
 
 }

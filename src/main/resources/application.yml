@@ -4,11 +4,14 @@ server:
 spring:
   datasource:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    url: jdbc:sqlserver://10.20.33.124;databaseName=YXHIS
-#    url: jdbc:sqlserver://127.0.0.1\SQLSERVER;databaseName=school
+#    url: jdbc:sqlserver://10.20.33.124;databaseName=YXHIS
+    url: jdbc:sqlserver://127.0.0.1\SQLSERVER;databaseName=school
     username: sa
     password: 123qwe,.
-
+  thymeleaf:
+    cache: false
+  mvc:
+    date-format: yyyy-MM-dd
 mybatis:
   mapper-locations: classpath:mapper/*.xml
 cron:
@@ -63,7 +66,6 @@ exec:
       TB_YL_ZDZMS:
       TB_YN_NEWBORN_INF:
       TB_ZY_YNZKZC_JL:
-
 
 
 

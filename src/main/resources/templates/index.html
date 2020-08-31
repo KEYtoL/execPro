@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>全民健康平台</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}">
+</head>
+<body>
+<blockquote class="layui-elem-quote news_search" >
+    <form class="layui-form" style="padding-top: 50px">
+
+        <div style="text-align:center">
+            <div style="margin-bottom: 50px ;" >
+                <span style="font-size:25px;font-family:仿宋">提取数据</span>
+            </div>
+            <div class="layui-inline" >
+                <div class="layui-input-inline">
+                    <div class="layui-input-block" style="width: 400px;">
+                        <input  type="text"  name="tableName" id="exec" class="layui-input" style="position:absolute;z-index:2;width:80%;" lay-verify="required" placeholder="表名" onkeyup="search()" autocomplete="off">
+                        <select type="text"    id="hc_select" lay-filter="hc_select" autocomplete="off"  lay-verify="required" class="layui-select" lay-search>
+                            <option value="全部" >全部</option>
+                            <!--<option th:each="proname : ${ProNames}" th:value="${proname}">[[${proname}]]</option>-->
+                        </select>
+                    </div>
+                </div>
+                <!--<label class="layui-form-label">入门时间</label>-->
+                <div class="layui-input-inline">
+                    <input type="text" id="createTime" class="layui-input"
+                           name="createTime"
+                           placeholder="请输入开始时间" autocomplete="off">
+                </div>
+                <!--<label class="layui-form-label">出门时间</label>-->
+                <div class="layui-input-inline">
+                    <input type="text" id="outTime" class="layui-input"
+                           name="outTime"
+                           placeholder="请输入结束时间" autocomplete="off">
+                </div>
+
+            </div>
+        </div>
+        <div style="margin-top: 1%" align="center">
+            <a class="layui-btn search_btn" lay-submit="" data-type="search"
+               lay-filter="search">执行</a>
+        </div>
+    </form>
+</blockquote>
+
+    <table id="owner" lay-filter="test"></table>
+
+
+
+    <script th:src="@{/layui/layui.js}"></script>
+    <script>
+        //layui基于组件(模块)开发的     ctrl+shift+f9  工具中重构代码
+        layui.use(['table','laydate','jquery','layer','form'],function () {
+            var table = layui.table;
+            var laydate = layui.laydate;
+            var $ = layui.jquery;
+            var layer = layui.layer;
+            var form = layui.form;
+            table.render({
+                elem:'#owner',
+                url:'/getList',
+                cols:[
+                    [
+                        // {field:'personalId',type:'checkbox'},
+                        {field:'execName',title:'存储过程名',width:200},
+                        {field:'tableName',title:'表名',width:250},
+                        {field:'sql',title:'SQL语句'},
+                        {field:'message',title:'结果'}
+                        // {title:'操作',width:180,templet:'#barEdit'}
+                    ]
+                ],
+                parseData:function (res) {
+                    return {
+                        "code":res.code==200?0:res.code,
+                        "msg":res.message,
+                        // "count":res.data.length,
+                        "data":res.data
+                    }
+                }
+            })
+
+            laydate.render({
+                elem: '#createTime',
+                max: 'new Date()',
+                trigger: 'click',
+                done: function(value, date, endDate) {
+                    var startDate = new Date(value).getTime();
+                    var endTime = new Date($('#outTime').val()).getTime();
+                    if(endTime < startDate) {
+                        layer.msg('结束时间不能小于开始时间');
+                        $('#createTime').val($('#outTime').val());
+                    }
+                }
+            })
+            laydate.render({
+                elem: '#outTime',
+                max: 'new Date()',
+                trigger: 'click',
+                done: function(value, date, endDate) {
+                    var startDate = new Date($('#createTime').val()).getTime();
+                    var endTime = new Date(value).getTime();
+                    if(endTime < startDate) {
+                        layer.msg('结束时间不能小于开始时间');
+                        $('#outTime').val($('#createTime').val());
+                    }
+                }
+            })
+
+
+
+            if ($("select[id=hc_select] option").size() === 1) {
+                $.ajax({
+                    url: 'getTableNames',
+                    type: 'post',
+                    dataType: 'json',
+                    success: function (res) {
+                        console.info("项目名称：" + res.data.length);
+                        var option;
+                        for (var i = 0; i < res.data.length; i++) {
+                            if (res.data[i] !== '' || res.data[i] !== null) {
+                                option = new Option(res.data[i], res.data[i]);
+                                $("#hc_select").append(option);
+                            }
+                        }
+                        form.render("select");
+                    }
+                });
+            }
+
+
+            
+
+
+            form.on('select(hc_select)', function (data) {   //选择移交单位 赋值给input框
+                $("#exec").val(data.value);
+                $("#hc_select").next().find("dl").css({ "display": "none" });
+                form.render();
+            });
+
+
+            $(".search_btn").click(function () {
+                table.reload('owner', {
+                    url: '/execPro'
+                    , where: {
+                        tableName: $("#exec").val(),
+                        createTime: $("#createTime").val(),
+                        outTime: $("#outTime").val()
+                    } //设定异步数据接口的额外参数
+                });
+            })
+
+            //点击其他地方,隐藏div
+            // document.addEventListener('click',function(e){
+            //     if(e.target.className!='tabelNames' ){
+            //         $("#hc_select").next().find("dl").css({ "display": "none" });
+            //         form.render();
+            //         // that.userClick=false;
+            //     }
+            // })
+
+            window.search = function () {
+                var value = $("#exec").val();
+                $("#hc_select").val(value);
+                form.render();
+                $("#hc_select").next().find("dl").css({ "display": "block" });
+                var dl = $("#hc_select").next().find("dl").children();
+                var j = -1;
+                for (var i = 0; i < dl.length; i++) {
+                    if (dl[i].innerHTML.indexOf(value) <= -1) {
+                        dl[i].style.display = "none";
+                        j++;
+                    }
+                    if (j == dl.length-1) {
+                        $("#hc_select").next().find("dl").css({ "display": "none" });
+                    }
+                }
+            }
+
+
+        })
+    </script>
+
+</body>
+</html>

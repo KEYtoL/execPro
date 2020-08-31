@@ -7,4 +7,6 @@ package com.yx.services;
  */
 public interface ExecProService {
     void ExecPro();
+
+    String ExecProByPage(String Pro,String tableName,String Dbegin,String Dend);
 }
